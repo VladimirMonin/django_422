@@ -14,6 +14,10 @@
     
     <p>Это категория: {{ category.name }}</p>
     <p>Слаг: {{ category.slug }}</p>
+    {% comment %} Так можно но не нужно {% endcomment %}
+    <a href="{{ category.slug }}">{{ category.name }}</a>
+    {% comment %} А так нужно. Это шаблонный тег URL который найдет маршрут по псевдониму {% endcomment %}
+    <a href="{% url "blog:category_detail" category.slug  %}">{{ category.name }}</a>
     <hr>
     {% endfor %}
 

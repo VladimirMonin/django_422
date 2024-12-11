@@ -79,12 +79,12 @@ def category_detail(request, category_slug):
     else:
         name = category_slug
 
-    context = {
-        "title": f"Категория {name}",
-        "text": f"Текст категории {name}",
-    }
-
-    return render(request, "category_detail.html", context)
+    return HttpResponse(
+        f"""
+        <h1>Категория: {name}</h1>
+        <p><a href="{reverse('blog:categories')}">Назад к категориям</a></p>
+    """
+    )
 
 
 def catalog_tags(request):

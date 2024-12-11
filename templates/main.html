@@ -12,19 +12,19 @@
     <h1>{{ title }}</h1>
     <p>{{ text }}</p>
     <hr>
-    <p>{{ string }}</p>
-    <p>{{ integer }}</p>
-    <p>{{ float }}</p>
-    <p>{{ boolean }}</p>
-    <p>{{ list }}</p>
-    {% comment %} <p>{{ list[0] }}</p> {% endcomment %}
-    <p>{{ list.0 }}</p>
-    <p>{{ set }}</p>
-    <p>{{ dict }}</p>
-    <p>{{ dict.name }}</p>
-    <p>{{ object }}</p>
-    <p>{{ object.name }}</p>
-    <p>{{ object.method }}</p>
-    <p>{{ object.method_arg "arg" }}</p>
+   {% comment %} Условия в шаблонизаторе Django {% endcomment %}
+{% if  user_status == "admin" %}
+<p>Здравствуй Админ!</p>
+{% elif user_status == "moderator" %}
+<p>Здравствуй модератор!</p>
+{% else %}
+<p>Здравствуй смертный!</p>
+{% endif %}
+
+{% comment %} Проверка на вхождение в перечень {% endcomment %}
+
+{% if user_status in "admin moderator editor" %}
+    <p>У вас есть права на редактирование</p>
+{% endif %}
 </body>
 </html>

@@ -11,38 +11,16 @@ CATEGORIES = [
 ]
 
 
-class Person:
-    def __init__(self, name, age):
-        self.name = name
-        self.age = age
-
-    def __str__(self):
-        return f"{self.name} - {self.age} годиков"
-
-    def method(self):
-        return "Метод класса"
-    
-    def method_arg(self, arg):
-        return f"Метод класса с аргументом {arg}"
-
-
 def main(request):
     catalog_categories_url = reverse("blog:categories")
     catalog_tags_url = reverse("blog:tags")
     
-    person = Person("Иван", 30)
 
     context = {
         "title": "Главная страница",
         "text": "Текст главной страницы",
-        "string": "Строка текста",
-        "integer": 123,
-        "float": 123.456,
-        "boolean": True,
-        "list": ["Апельсин", "Банан", "Ананас"],
-        "set": {"Апельсин", "Банан", "Ананас"},
-        "dict": {"Апельсин": "Оранжевый", "Банан": "Желтый", "Ананас": "Желтый"},
-        "object": person
+        "user_status": "moderator",
+      
     }
     return render(request, "main.html", context)
 

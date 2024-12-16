@@ -3,6 +3,9 @@ from django.contrib import admin
 from django.urls import path
 from python_blog.views import main
 from django.urls import include
+
+from django.conf import settings
+from django.conf.urls.static import static
 """
 Конверторы путей Django:
 str - строки, любые символы кроме слэша '/' (по умолчанию)
@@ -22,4 +25,4 @@ urlpatterns = [
 
     # Подключаем python_blog.urls
     path('posts/', include('python_blog.urls')),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

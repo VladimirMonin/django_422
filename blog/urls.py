@@ -18,7 +18,7 @@ path('blog/<slug:post_slug>/', views.post_detail)
 """
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', main),
+    path("", main, name="main"),
 
     # Подключаем python_blog.urls
     path('posts/', include('python_blog.urls')),

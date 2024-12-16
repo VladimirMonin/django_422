@@ -10,17 +10,23 @@ CATEGORIES = [
     {"slug": "linux", "name": "Linux"},
 ]
 
+MENU_ITEMS = [
+    {"title": "Главная", "url_name": "main"},
+    {"title": "Все посты", "url_name": "blog:posts"},
+    {"title": "Категории", "url_name": "blog:categories"},
+    {"title": "Теги", "url_name": "blog:tags"},
+]
+
 
 def main(request):
     catalog_categories_url = reverse("blog:categories")
     catalog_tags_url = reverse("blog:tags")
-    
 
     context = {
         "title": "Главная страница",
         "text": "Текст главной страницы",
         "user_status": "moderator",
-      
+        "menu_items": MENU_ITEMS,
     }
     return render(request, "main.html", context)
 
@@ -39,7 +45,7 @@ def catalog_categories(request):
         url = reverse("blog:category_detail", args=[category["slug"]])
         links.append(f'<p><a href="{url}">{category["name"]}</a></p>')
 
-    context  = {
+    context = {
         "title": "Категории",
         "text": "Текст страницы с категориями",
         "categories": CATEGORIES,

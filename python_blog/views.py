@@ -33,12 +33,24 @@ def about(request):
 
 
 def catalog_posts(request):
-    return HttpResponse("Каталог постов")
+    # Получаем все опубликованные посты
+    posts = [post for post in dataset if post['is_published']]
+    context = {
+        'title': 'Блог',
+        'posts': posts
+    }
+    return render(request, 'blog.html', context)
 
 
 def post_detail(request, post_slug):
-    return HttpResponse(f"Страница поста {post_slug}")
-
+    # Находим нужный пост по slug
+    post = next((post for post in dataset if post['slug'] == post_slug), None)
+    
+    context = {
+        'title': post['title'],
+        'post': post
+    }
+    return render(request, 'post_detail.html', context)
 
 def catalog_categories(request):
     links = []

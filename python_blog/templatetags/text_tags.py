@@ -19,3 +19,9 @@ def uppercase(text):
 def lowercase(text):
     return text.lower()
 
+@register.inclusion_tag('components/category_card.html')
+def category_card(category):
+    return {
+        'name': category['name'],
+        'slug': category['slug']
+    }

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load text_tags %}
 {% block title %}
 {{ title }}
 {% endblock %}
@@ -30,3 +30,7 @@
 <p>{{group|default:"Без группы"}}</p>
 
 {% endblock %}
+
+{% block footer %}
+<p>{% uppercase "Все права защищены." %} Python422. Академия Топ. 2025 г. {% lowercase  "NEW"%} </p>
+{% endblock footer %}

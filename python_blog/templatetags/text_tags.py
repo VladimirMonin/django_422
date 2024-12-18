@@ -25,3 +25,8 @@ def category_card(category):
         'name': category['name'],
         'slug': category['slug']
     }
+
+
+@register.filter
+def replace_spaces(text):
+    return text.replace(' ', '_')

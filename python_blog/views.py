@@ -18,6 +18,7 @@ def main(request):
         "title": "Главная страница",
         "text": "Текст главной страницы",
         "user_status": "moderator",
+        "active_page": "main"
     }
     return render(request, "main.html", context)
 
@@ -40,6 +41,7 @@ def catalog_categories(request):
         "title": "Категории",
         "text": "Текст страницы с категориями",
         "categories": CATEGORIES,
+        "active_page": "blog:categories"
     }
     return render(request, "catalog_categories.html", context)
 

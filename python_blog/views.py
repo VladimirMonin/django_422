@@ -11,6 +11,7 @@ CATEGORIES = [
     {"slug": "linux", "name": "Linux"},
 ]
 
+
 def main(request):
     catalog_categories_url = reverse("blog:categories")
     catalog_tags_url = reverse("blog:tags")
@@ -21,6 +22,14 @@ def main(request):
         "user_status": "moderator",
     }
     return render(request, "main.html", context)
+
+
+def about(request):
+    context = {
+        "title": "О компании",
+        "text": "Мы - команда профессионалов в области веб-разработки",
+    }
+    return render(request, "about.html", context)
 
 
 def catalog_posts(request):
@@ -41,7 +50,6 @@ def catalog_categories(request):
         "title": "Категории",
         "text": "Текст страницы с категориями",
         "categories": CATEGORIES,
-      
     }
     return render(request, "catalog_categories.html", context)
 

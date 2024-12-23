@@ -45,9 +45,22 @@ post_1.title
 post_1.content
 
 post_1.content = "Django не очень лёгкий фреймворк, но у него пологая кривая входа..."
+post_1.save()
 
 post_3 = Post(title="Тестовый пост", content="Тестовый пост")
 
 # Делаем операцию удаления
 post_3.delete()
+
+3. Получить пост по id
+post_1 = Post.objects.get(id=1) # id - поле модели id - это поле, которое автоматически генерируется Django
+post_1 = Post.objects.get(pk=1) # pk - primary key - первичный ключ
+
+4. Получим все посты и сортируем их по полю created_at от новых к старым
+posts = Post.objects.all().order_by("-created_at")
+
+5. Используя filter получим посты где категория NULL
+posts = Post.objects.filter(category=None)
+Применим к полученному querySet сортировку
+posts = posts.order_by("-created_at")
 """

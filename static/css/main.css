@@ -92,3 +92,13 @@ body {
       }
   }
   
+
+.stats-text {
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .stats {
+        font-size: 0.9rem;
+    }
+}

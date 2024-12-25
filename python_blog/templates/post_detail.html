@@ -23,13 +23,20 @@
                 <div class="card-body">
                     <p class="card-text">{{ post.content }}</p>
                     
-                    <div class="stats mt-4 pb-3 border-bottom">
-                        <span class="me-4 text-dark"><i class="bi bi-eye"></i> {{ post.views }} просмотров</span>
-                        <span class="me-4 text-dark"><i class="bi bi-calendar"></i> {{ post.created_at|date:"d.m.Y" }}</span>
+                    <div class="stats mt-4 pb-3 border-bottom d-flex flex-wrap gap-3">
+                        <span class="d-flex align-items-center text-dark">
+                            <i class="bi bi-eye me-1"></i>
+                            <span class="stats-text">{{ post.views }} просмотров</span>
+                        </span>
+                        <span class="d-flex align-items-center text-dark">
+                            <i class="bi bi-calendar me-1"></i>
+                            <span class="stats-text">{{ post.created_at|date:"d.m.Y" }}</span>
+                        </span>
                         {% if post.category %}
-                            <span class="text-dark">
-                                <i class="bi bi-folder"></i> 
-                                <a href="{% url 'blog:category_detail' post.category.slug %}" class="text-decoration-none text-dark fw-bold">
+                            <span class="d-flex align-items-center text-dark">
+                                <i class="bi bi-folder me-1"></i>
+                                <a href="{% url 'blog:category_detail' post.category.slug %}" 
+                                   class="text-decoration-none text-dark fw-bold stats-text">
                                     {{ post.category.name }}
                                 </a>
                             </span>
@@ -37,9 +44,9 @@
                     </div>
 
                     <div class="author mt-3">
-                        <span class="text-dark">
-                            <i class="bi bi-person-circle"></i> Автор: 
-                            <span class="fw-bold">{{ post.author.username }}</span>
+                        <span class="d-flex align-items-center text-dark">
+                            <i class="bi bi-person-circle me-1"></i>
+                            <span class="stats-text">Автор: <span class="fw-bold">{{ post.author.username }}</span></span>
                         </span>
                     </div>
                 </div>
@@ -49,8 +56,11 @@
 
     <div class="row mt-4">
         <div class="col-12">
-            <a href="{% url 'blog:posts' %}" class="btn btn-warning">
+            <a href="{% url 'blog:posts' %}" class="btn btn-warning d-none d-md-inline-block">
                 <i class="bi bi-arrow-left"></i> Вернуться к списку постов
+            </a>
+            <a href="{% url 'blog:posts' %}" class="btn btn-warning d-inline-block d-md-none">
+                <i class="bi bi-arrow-left"></i>
             </a>
         </div>
     </div>

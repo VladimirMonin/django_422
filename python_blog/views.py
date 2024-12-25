@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.urls import reverse
-from .models import Post
+from .models import Post, Category
 
 CATEGORIES = [
     {"slug": "python", "name": "Python"},
@@ -44,35 +44,25 @@ def post_detail(request, post_slug):
     return render(request, "post_detail.html", context)
 
 
-def catalog_categories(request):
-    links = []
-    for category in CATEGORIES:
-        url = reverse("blog:category_detail", args=[category["slug"]])
-        links.append(f'<p><a href="{url}">{category["name"]}</a></p>')
+from .models import Post, Category
 
-    context = {
-        "title": "Категории",
-        "text": "Текст страницы с категориями",
-        "categories": CATEGORIES,
-    }
+
+def catalog_categories(request):
+    categories = Category.objects.all()
+    context = {"categories": categories, "title": "Категории блога"}
     return render(request, "catalog_categories.html", context)
 
 
 def category_detail(request, category_slug):
-
-    category = [cat for cat in CATEGORIES if cat["slug"] == category_slug][0]
-
-    if category:
-        name = category["name"]
-    else:
-        name = category_slug
-
-    return HttpResponse(
-        f"""
-        <h1>Категория: {name}</h1>
-        <p><a href="{reverse('blog:categories')}">Назад к категориям</a></p>
-    """
-    )
+    category = Category.objects.get(slug=category_slug)
+    # Используем related_name="posts" для получения всех постов категории
+    posts = category.posts.all()
+    context = {
+        "category": category,
+        "posts": posts,
+        "title": f"Категория: {category.name}",
+    }
+    return render(request, "category_detail.html", context)
 
 
 def catalog_tags(request):

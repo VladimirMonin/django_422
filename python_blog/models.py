@@ -24,7 +24,6 @@ class Category(models.Model):
 
 
 
-
 # PRACTICE - Работа с моделью Post
 """
 1. Создать новый пост
@@ -80,4 +79,52 @@ posts = Post.objects.all().order_by("-created_at")
 posts = Post.objects.filter(category=None)
 Применим к полученному querySet сортировку
 posts = posts.order_by("-created_at")
+"""
+
+# PRACTICE - Работа с моделью Category
+
+"""
+0. Запускаем shell plus --print-sql
+python manage.py shell_plus --print-sql
+
+1. Создать новую категорию
+category_1 = Category(name="Django", slug="django").save()
+category_2 = Category(name="Python", slug="python").save()
+category_3 = Category(name="Postgresql", slug="postgresql").save()
+category_4 = Category(name="Docker", slug="docker").save()
+category_5 = Category(name="Linux", slug="linux").save()
+
+
+2. Получим все посты
+posts = Post.objects.all()
+
+3. Возьмем первый пост
+post_1 = posts[0]
+
+django_category = Category.objects.get(name="Django")
+
+4. post_1 - хочу присвоить категорию django_category
+post_1.category = django_category
+post_1.save()
+
+post_1 - это объект, который мы получили из базы данных
+post_1.title - это поле title у объекта post_1
+post_1.category - экземпляр объекта Category, который мы присвоили объекту post_1
+
+post_1.category.name - Django
+
+# Обратное связывание. Мы обозначили related_name="posts" в модели Post
+
+# Получим все посты по объекту категории
+category = Category.objects.get(name="Django")
+django_posts = category.posts.all()
+
+# Если бы не было related_name="posts"
+
+category = Category.objects.get(name="Django")
+django_posts = Post.objects.filter(category=category)
+# или
+
+django_posts = Post.objects.filter(category__name="Django")
+
 """

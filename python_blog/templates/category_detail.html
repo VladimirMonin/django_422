@@ -9,11 +9,18 @@
     <div class="row mb-4">
         <div class="col-12">
             <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{% url 'blog:categories' %}" class="text-dark">Категории</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ category.name }}</li>
+                <ol class="breadcrumb d-flex align-items-center">
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'blog:categories' %}" class="badge bg-dark text-white text-decoration-none">
+                            <i class="bi bi-folder"></i> Категории
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <span class="badge bg-warning text-dark">{{ category.name }}</span>
+                    </li>
                 </ol>
             </nav>
+            
             <div class="card border-dark mb-4">
                 <div class="card-body">
                     <h1 class="card-title text-dark">

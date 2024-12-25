@@ -55,14 +55,15 @@ def catalog_categories(request):
 
 def category_detail(request, category_slug):
     category = Category.objects.get(slug=category_slug)
-    # Используем related_name="posts" для получения всех постов категории
     posts = category.posts.all()
     context = {
         "category": category,
         "posts": posts,
         "title": f"Категория: {category.name}",
+        "active_menu": "categories"  # Добавляем флаг активного меню
     }
     return render(request, "category_detail.html", context)
+
 
 
 def catalog_tags(request):

@@ -6,27 +6,32 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1><i class="bi bi-folder"></i> Категории</h1>
-    <div class="row mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="text-dark"><i class="bi bi-folder"></i> Категории блога</h1>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         {% for category in categories %}
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ category.name }}</h5>
-                        <p class="card-text">{{ category.description }}</p>
-                        <p class="text-muted">Постов: {{ category.posts.count }}</p>
-                        <a href="{{ category.get_absolute_url }}" class="btn btn-primary">
-                            Перейти к постам
+        <div class="col">
+            <div class="card h-100 border-dark">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-folder2"></i> {{ category.name }}
+                    </h5>
+                    <p class="card-text">{{ category.description }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-warning text-dark">
+                            <i class="bi bi-file-text"></i> {{ category.posts.count }} постов
+                        </span>
+                        <a href="{{ category.get_absolute_url }}" class="btn btn-warning">
+                            Перейти <i class="bi bi-arrow-right"></i>
                         </a>
                     </div>
                 </div>
             </div>
-        {% empty %}
-            <div class="col-12">
-                <div class="alert alert-info">
-                    Категории пока не добавлены
-                </div>
-            </div>
+        </div>
         {% endfor %}
     </div>
 </div>

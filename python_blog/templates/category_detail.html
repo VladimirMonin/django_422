@@ -1,15 +1,30 @@
 {% extends "base.html" %}
 
 {% block title %}
-{{ category.name }} | Блог
+{{ category.name }} | Категория
 {% endblock %}
 
 {% block content %}
 <div class="container mt-4">
     <div class="row mb-4">
         <div class="col-12">
-            <h1><i class="bi bi-folder"></i> {{ category.name }}</h1>
-            <p class="lead">{{ category.description }}</p>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'blog:categories' %}" class="text-dark">Категории</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ category.name }}</li>
+                </ol>
+            </nav>
+            <div class="card border-dark mb-4">
+                <div class="card-body">
+                    <h1 class="card-title text-dark">
+                        <i class="bi bi-folder2-open"></i> {{ category.name }}
+                    </h1>
+                    <p class="card-text">{{ category.description }}</p>
+                    <span class="badge bg-warning text-dark">
+                        <i class="bi bi-file-text"></i> {{ category.posts.count }} постов
+                    </span>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -18,18 +33,10 @@
             {% for post in posts %}
                 {% include 'post_preview_include.html' %}
             {% empty %}
-                <div class="alert alert-info">
-                    В этой категории пока нет постов
+                <div class="alert alert-warning">
+                    <i class="bi bi-info-circle"></i> В этой категории пока нет постов
                 </div>
             {% endfor %}
-        </div>
-    </div>
-
-    <div class="row mt-4">
-        <div class="col-12">
-            <a href="{% url 'blog:categories' %}" class="btn btn-outline-primary">
-                <i class="bi bi-arrow-left"></i> Вернуться к категориям
-            </a>
         </div>
     </div>
 </div>

@@ -16,6 +16,8 @@
     {% comment %} Пример ссылки с get_absolute_url {% endcomment %}
     <a href="{{ category.get_absolute_url }}">{{ category.name }}</a>
     <hr>
+    <h2>Посты этой категории</h2>
+    
     {% endfor %}
     {% endblock %}
 

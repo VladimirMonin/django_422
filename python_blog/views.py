@@ -58,18 +58,11 @@ def catalog_categories(request):
 
 def category_detail(request, category_slug):
 
-    category = [cat for cat in CATEGORIES if cat["slug"] == category_slug][0]
+    category = Category.objects.filter(slug=category_slug).first()
+    posts = Post.objects.filter(category=category)
 
-    if category:
-        name = category["name"]
-    else:
-        name = category_slug
-
-    return HttpResponse(
-        f"""
-        <h1>Категория: {name}</h1>
-        <p><a href="{reverse('blog:categories')}">Назад к категориям</a></p>
-    """
+    return render(
+        request, "category_detail.html", {"category": category, "posts": posts}
     )
 
 

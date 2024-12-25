@@ -2,14 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.urls import reverse
 from .blog_data import dataset
-
-CATEGORIES = [
-    {"slug": "python", "name": "Python"},
-    {"slug": "django", "name": "Django"},
-    {"slug": "postgresql", "name": "PostgreSQL"},
-    {"slug": "docker", "name": "Docker"},
-    {"slug": "linux", "name": "Linux"},
-]
+from .models import Post, Category
 
 
 def main(request):
@@ -53,10 +46,7 @@ def post_detail(request, post_slug):
     return render(request, 'post_detail.html', context)
 
 def catalog_categories(request):
-    links = []
-    for category in CATEGORIES:
-        url = reverse("blog:category_detail", args=[category["slug"]])
-        links.append(f'<p><a href="{url}">{category["name"]}</a></p>')
+    CATEGORIES = Category.objects.all()
 
     context = {
         "title": "Категории",

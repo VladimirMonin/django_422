@@ -1,4 +1,6 @@
 from django.db import models
+from django.urls import reverse
+from django.utils.text import slugify
 
 
 class Post(models.Model):
@@ -8,20 +10,49 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     # категория - внешний ключ
     category = models.ForeignKey(
-        "Category", # Ссылка на модель Category
-        on_delete=models.SET_NULL, # При удалении категории, установить значение NULL
-        blank=True, # Не требуем в формах заполнения
-        null=True, # Разрешаем значение NULL в базе данных
-        related_name="posts", # Имя обратной связи
-        default=None # По умолчанию значение NULL
+        "Category",  # Ссылка на модель Category
+        on_delete=models.SET_NULL,  # При удалении категории, установить значение NULL
+        blank=True,  # Не требуем в формах заполнения
+        null=True,  # Разрешаем значение NULL в базе данных
+        related_name="posts",  # Имя обратной связи
+        default=None,  # По умолчанию значение NULL
     )
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=250, unique=True)
-    description = models.TextField(blank=True, null=True, default="Без описания")
+    name = models.CharField(max_length=200, verbose_name="Название")
+    slug = models.SlugField(max_length=250, unique=True, verbose_name="Слаг")
+    description = models.TextField(
+        blank=True, null=True, default="Без описания", verbose_name="Описание"
+    )
 
+    def __str__(self):
+        return self.name
+    
+    def get_absolute_url(self):
+        """
+        Метод возвращает абсолютный URL категории.
+        В админке Django, при создании или редактировании категории, будет ссылка "Посмотреть на сайте." В шаблонах тоже удобно вызывать его.
+        """
+        return reverse("blog:category_detail", args=[self.slug])
+    
+    def save(self, *args, **kwargs):
+        """
+        Служебный метод для сохранения объекта в базе данных.
+        Мы расширяем его чтобы изменить логику сохранения объекта.
+        """
+        self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+    
+    class Meta:
+        """
+        Специальный вложенный класс для настроек модели.
+        """
+        verbose_name = "Категория"
+        verbose_name_plural = "Категории"
+        ordering = ["name"]
+
+    
 
 
 # PRACTICE - Работа с моделью Post
@@ -127,4 +158,15 @@ django_posts = Post.objects.filter(category=category)
 
 django_posts = Post.objects.filter(category__name="Django")
 
+
+
+######################## После обновления модели Category ########################
+
+Пробуем создать категорию (Убедимся что кириллица не обрабатывается!!!!)
+
+category_6 = Category(name="Linux Avrora").save()
+category_7 = Category(name="Добрый добрый JS").save()
+
+category_8 = Category(name="Постгра").save()
+category_9 = Category(name="Оракл").save()
 """

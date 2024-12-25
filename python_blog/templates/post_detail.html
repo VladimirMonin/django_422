@@ -27,7 +27,12 @@
                         <span class="me-4"><i class="bi bi-eye"></i> {{ post.views }} просмотров</span>
                         <span class="me-4"><i class="bi bi-calendar"></i> {{ post.created_at|date:"d.m.Y" }}</span>
                         {% if post.category %}
-                            <span><i class="bi bi-folder"></i> {{ post.category.name }}</span>
+                            <span>
+                                <i class="bi bi-folder"></i> 
+                                <a href="{% url 'blog:category_detail' post.category.slug %}" class="text-decoration-none">
+                                    {{ post.category.name }}
+                                </a>
+                            </span>
                         {% endif %}
                     </div>
 

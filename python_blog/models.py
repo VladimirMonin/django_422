@@ -2,12 +2,18 @@ from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 from unidecode import unidecode
+# Функция get_user_model() возвращает модель пользователя, которая используется по умолчанию в проекте.
+from django.contrib.auth import get_user_model
+
 
 class Post(models.Model):
     title = models.CharField(max_length=100, unique=True, verbose_name="Заголовок")
+    slug = models.SlugField(max_length=250, unique=True, verbose_name="Слаг", blank=True, null=True)
     content = models.TextField(verbose_name="Контент")
+    author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, verbose_name="Автор", related_name="posts", default=None, null=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
+    views = models.PositiveIntegerField(default=0, verbose_name="Просмотры")
     # категория - внешний ключ
     category = models.ForeignKey(
         "Category",  # Ссылка на модель Category
@@ -18,6 +24,7 @@ class Post(models.Model):
         default=None,  # По умолчанию значение NULL
         verbose_name="Категория",
     )
+    tags = models.JSONField(null=True, blank=True, default=list, verbose_name="Теги") # default=list - по умолчанию пустой список
 
     def __str__(self):
         return self.title
@@ -28,6 +35,14 @@ class Post(models.Model):
         В админке Django, при создании или редактировании поста, будет ссылка "Посмотреть на сайте." В шаблонах тоже удобно вызывать его.
         """
         return reverse("blog:post_detail", args=[self.slug])
+    
+    def save(self, *args, **kwargs):
+        """
+        Служебный метод для сохранения объекта в базе данных.
+        Мы расширяем его чтобы изменить логику сохранения объекта.
+        """
+        self.slug = slugify(unidecode(self.title))
+        super().save(*args, **kwargs)
     
     class Meta:
         """

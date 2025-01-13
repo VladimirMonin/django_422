@@ -2,7 +2,7 @@
     <div class="card-body">
         <h2 class="card-title text-dark">{{ post.title }}</h2>
         <div class="mb-3">
-            {% for tag in post.tags %}
+            {% for tag in post.tags.all %}
                 <span class="badge bg-warning text-dark me-1">#{{ tag }}</span>
             {% endfor %}
         </div>

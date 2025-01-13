@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.urls import reverse
-from .blog_data import dataset
+from .models import Post, Category
 
 CATEGORIES = [
     {"slug": "python", "name": "Python"},
@@ -33,54 +33,37 @@ def about(request):
 
 
 def catalog_posts(request):
-    # Получаем все опубликованные посты
-    posts = [post for post in dataset if post['is_published']]
-    context = {
-        'title': 'Блог',
-        'posts': posts
-    }
-    return render(request, 'blog.html', context)
+    posts = Post.objects.all()
+    context = {"title": "Блог", "posts": posts}
+    return render(request, "blog.html", context)
 
 
 def post_detail(request, post_slug):
-    # Находим нужный пост по slug
-    post = next((post for post in dataset if post['slug'] == post_slug), None)
-    
-    context = {
-        'title': post['title'],
-        'post': post
-    }
-    return render(request, 'post_detail.html', context)
+    post = Post.objects.get(slug=post_slug)
+    context = {"title": post.title, "post": post}
+    return render(request, "post_detail.html", context)
+
+
+from .models import Post, Category
+
 
 def catalog_categories(request):
-    links = []
-    for category in CATEGORIES:
-        url = reverse("blog:category_detail", args=[category["slug"]])
-        links.append(f'<p><a href="{url}">{category["name"]}</a></p>')
-
-    context = {
-        "title": "Категории",
-        "text": "Текст страницы с категориями",
-        "categories": CATEGORIES,
-    }
+    categories = Category.objects.all()
+    context = {"categories": categories, "title": "Категории блога"}
     return render(request, "catalog_categories.html", context)
 
 
 def category_detail(request, category_slug):
+    category = Category.objects.get(slug=category_slug)
+    posts = category.posts.all()
+    context = {
+        "category": category,
+        "posts": posts,
+        "title": f"Категория: {category.name}",
+        "active_menu": "categories"  # Добавляем флаг активного меню
+    }
+    return render(request, "category_detail.html", context)
 
-    category = [cat for cat in CATEGORIES if cat["slug"] == category_slug][0]
-
-    if category:
-        name = category["name"]
-    else:
-        name = category_slug
-
-    return HttpResponse(
-        f"""
-        <h1>Категория: {name}</h1>
-        <p><a href="{reverse('blog:categories')}">Назад к категориям</a></p>
-    """
-    )
 
 
 def catalog_tags(request):

@@ -90,4 +90,47 @@ class Category(models.Model):
 """
 0. Запуск shell plus с print sql
 python manage.py shell_plus --print-sql
+
+1. Создадим ещё пару постов
+
+post1 = Post.objects.create(title="Django ORM", content="Изучаем Django ORM")
+post2 = Post.objects.create(title="Python Basic", content="Основы Python")
+
+# Создаем пару тегов
+tag1 = Tag.objects.create(name="Python")
+tag2 = Tag.objects.create(name="Django")
+
+# Добавляем теги к постам
+post1.tags.add(tag1, tag2)  # Первому посту добавляем оба тега
+post2.tags.add(tag1)  # Второму посту добавляем только тег Python
+
+# Получим пост со всеми тегами
+post_1 = Post.objects.get(id=1)
+
+# Получим теги
+post_1.tags - Получим manager для связи многие ко многим
+Мы можем вызвать его методы и получить все теги, связанные с этим постом.
+tags = post_1.tags.all() - кверисет
+
+# Посчитаем количество тегов у поста
+post_1.tags.count() - 2
+
+# Получим теги в которых есть py в имени
+post_1.tags.filter(name__icontains="PY")
+
+name - поле модели Tag
+__icontains - фильтр по подстроке
+
+# Посчитаем количество постов у тега tag1
+
+posts_count = tag1.posts.count()
+
+# Получим все посты у которых есть тег tag1
+post_with_tag1 = tag1.posts.all()
+
+# Удалим тег tag2 у post1
+post1.tags.remove(tag2)
+
+# Обновим данные в переменной post_1
+post_1.refresh_from_db()
 """

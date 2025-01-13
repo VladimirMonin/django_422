@@ -84,3 +84,10 @@ class Category(models.Model):
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
         ordering = ["name"]
+
+
+#PRACTICE Практика с многие ко многим и Shell plus
+"""
+0. Запуск shell plus с print sql
+python manage.py shell_plus --print-sql
+"""

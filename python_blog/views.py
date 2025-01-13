@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.urls import reverse
-from .models import Post, Category
+from .models import Post, Category, Tag
+# Импортируем Count
+from django.db.models import Count
 
 CATEGORIES = [
     {"slug": "python", "name": "Python"},
@@ -44,8 +46,6 @@ def post_detail(request, post_slug):
     return render(request, "post_detail.html", context)
 
 
-from .models import Post, Category
-
 
 def catalog_categories(request):
     categories = Category.objects.all()
@@ -67,8 +67,29 @@ def category_detail(request, category_slug):
 
 
 def catalog_tags(request):
-    return HttpResponse("Каталог тегов")
+    # Получаем все теги и аннотируем их количеством постов
+    tags = Tag.objects.annotate(posts_count=Count('posts')).order_by('-posts_count')
+    
+    context = {
+        'tags': tags,
+        'title': 'Теги блога',
+        'active_menu': 'tags'
+    }
+    return render(request, 'catalog_tags.html', context)
+
 
 
 def tag_detail(request, tag_slug):
-    return HttpResponse(f"Страница тега {tag_slug}")
+    # Получаем все посты конкретного тега через многие-ко-многим
+    tag = Tag.objects.get(slug=tag_slug)
+    posts = tag.posts.all()
+
+    context = {
+        "tag": tag,
+        "posts": posts,
+        "title": f"Тег: {tag.name}",
+        "active_menu": "tags",  # Добавляем флаг активного меню
+    }
+
+
+    return render(request, "tag_detail.html", context)

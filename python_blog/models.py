@@ -86,51 +86,81 @@ class Category(models.Model):
         ordering = ["name"]
 
 
-#PRACTICE Практика с многие ко многим и Shell plus
-"""
-0. Запуск shell plus с print sql
-python manage.py shell_plus --print-sql
+#PRACTICE Практика с лукапами и Shell plus
 
-1. Создадим ещё пару постов
+# Запуск shell plus
+python .\manage.py shell_plus --print-sql
 
-post1 = Post.objects.create(title="Django ORM", content="Изучаем Django ORM")
-post2 = Post.objects.create(title="Python Basic", content="Основы Python")
+# Все посты определенной категории
+Post.objects.filter(category__name="Python")
 
-# Создаем пару тегов
-tag1 = Tag.objects.create(name="Python")
-tag2 = Tag.objects.create(name="Django")
+# Все посты с определенным тегом
+Post.objects.filter(tags__name="Django")
 
-# Добавляем теги к постам
-post1.tags.add(tag1, tag2)  # Первому посту добавляем оба тега
-post2.tags.add(tag1)  # Второму посту добавляем только тег Python
+# Посты у которых автор имеет определенный email (регистрозависимое вхождение)
+Post.objects.filter(author__email__contains="admin")
 
-# Получим пост со всеми тегами
-post_1 = Post.objects.get(id=1)
+# Посты за 2024 год
+Post.objects.filter(created_at__year=2024)
 
-# Получим теги
-post_1.tags - Получим manager для связи многие ко многим
-Мы можем вызвать его методы и получить все теги, связанные с этим постом.
-tags = post_1.tags.all() - кверисет
+# Поищем посты РАНЕЕ чем 2025 год
+Post.objects.filter(created_at__lt=datetime(2025, 1, 1))
 
-# Посчитаем количество тегов у поста
-post_1.tags.count() - 2
+# Посты с годом создания меньше 2025
+Post.objects.filter(created_at__year__lt=2025)
 
-# Получим теги в которых есть py в имени
-post_1.tags.filter(name__icontains="PY")
+# Посты с годом создания больше 2020
+Post.objects.filter(created_at__year__gt=2020)
 
-name - поле модели Tag
-__icontains - фильтр по подстроке
+# Посты с годом создания между 2020 и 2024
+Post.objects.filter(created_at__year__range=(2020, 2024))
 
-# Посчитаем количество постов у тега tag1
 
-posts_count = tag1.posts.count()
+# Посты за последний месяц
+from datetime import datetime, timedelta
+month_ago = datetime.now() - timedelta(days=30)
+Post.objects.filter(created_at__gte=month_ago)
 
-# Получим все посты у которых есть тег tag1
-post_with_tag1 = tag1.posts.all()
+# Посты обновленные сегодня
+from django.utils import timezone
+today = timezone.now().date()
+Post.objects.filter(updated_at__date=today)
 
-# Удалим тег tag2 у post1
-post1.tags.remove(tag2)
+# Поиск постов по части заголовка
+Post.objects.filter(title__icontains="python")
 
-# Обновим данные в переменной post_1
-post_1.refresh_from_db()
-"""
+# Поиск категорий по части названия
+Category.objects.filter(name__icontains="прог")
+
+# Поиск тегов начинающихся с определенных букв
+Tag.objects.filter(name__istartswith="py")
+
+# Точное совпадение заголовка
+Post.objects.filter(title__exact="Django ORM")
+
+# Регистронезависимое точное совпадение
+Post.objects.filter(title__iexact="django orm")
+
+# Точное совпадение слага
+Post.objects.get(slug__exact="django-orm")
+
+# Посты с количеством просмотров больше 100 и тегом "Python"
+Post.objects.filter(views__gt=100, tags__name="Python")
+
+# Посты без категории
+Post.objects.filter(category__isnull=True)
+
+# Посты в определенном диапазоне просмотров
+Post.objects.filter(views__range=(10, 100))
+
+# Топ-5 самых просматриваемых постов
+Post.objects.order_by('-views')[:3]
+
+
+# Последние посты определенной категории
+Post.objects.filter(category__name="Python").order_by('-created_at')[:10]
+
+# Посты с более чем одним тегом
+# Импорт Count
+from django.db.models import Count
+Post.objects.annotate(tags_count=Count('tags')).filter(tags_count__gt=0)

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load cache %}
 {% block title %}
 Блог | Все посты
 {% endblock %}
@@ -50,7 +50,7 @@
             </div>
         </div>
     </div>
-
+    {% cache 300 post_list %}
     <div class="row">
         <div class="col-12">
             {% for post in posts %}
@@ -62,5 +62,7 @@
             {% endfor %}
         </div>
     </div>
+    {% endcache %}
 </div>
+
 {% endblock %}

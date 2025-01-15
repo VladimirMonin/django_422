@@ -35,7 +35,7 @@ def about(request):
 
 
 def catalog_posts(request):
-    posts = Post.objects.all()
+    posts = Post.objects.select_related('category', 'author').prefetch_related('tags').all()
     context = {"title": "Блог", "posts": posts}
     return render(request, "blog.html", context)
 

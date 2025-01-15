@@ -27,3 +27,8 @@ urlpatterns = [
     # Подключаем python_blog.urls
     path('posts/', include('python_blog.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += [
+        path('__debug__/', include('debug_toolbar.urls')),
+    ]

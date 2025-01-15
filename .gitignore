@@ -1,6 +1,7 @@
-venv/
+.venv/
 db.sqlite3
 *__pycache__/
 .idea/
 .vscode/launch.json
 hw_315/
+.vscode/settings.json

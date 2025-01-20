@@ -4,6 +4,8 @@ from django.urls import reverse
 from .models import Post, Category, Tag
 # Импортируем Count
 from django.db.models import Count
+from django.contrib.messages import constants as messages
+from django.contrib import messages
 
 CATEGORIES = [
     {"slug": "python", "name": "Python"},
@@ -12,6 +14,14 @@ CATEGORIES = [
     {"slug": "docker", "name": "Docker"},
     {"slug": "linux", "name": "Linux"},
 ]
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'primary',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'danger',
+}
 
 
 def main(request):
@@ -36,7 +46,11 @@ def about(request):
 
 def catalog_posts(request):
     posts = Post.objects.select_related('category', 'author').prefetch_related('tags').all()
+    
+    # Сформируем послание на зеленом блоке message
+    messages.add_message(request, messages.SUCCESS, "Посты успешно отображены")
     context = {"title": "Блог", "posts": posts}
+    
     return render(request, "blog.html", context)
 
 

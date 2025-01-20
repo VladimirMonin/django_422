@@ -1,11 +1,13 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+
 from django.urls import reverse
 from .models import Post, Category, Tag
+
 # Импортируем Count
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.contrib.messages import constants as messages
 from django.contrib import messages
+
 
 CATEGORIES = [
     {"slug": "python", "name": "Python"},
@@ -16,11 +18,11 @@ CATEGORIES = [
 ]
 
 MESSAGE_TAGS = {
-    messages.DEBUG: 'primary',
-    messages.INFO: 'info',
-    messages.SUCCESS: 'success',
-    messages.WARNING: 'warning',
-    messages.ERROR: 'danger',
+    messages.DEBUG: "primary",
+    messages.INFO: "info",
+    messages.SUCCESS: "success",
+    messages.WARNING: "warning",
+    messages.ERROR: "danger",
 }
 
 
@@ -45,20 +47,84 @@ def about(request):
 
 
 def catalog_posts(request):
+    # Базовый QuerySet с оптимизацией запросов
     posts = Post.objects.select_related('category', 'author').prefetch_related('tags').all()
     
-    # Сформируем послание на зеленом блоке message
-    messages.add_message(request, messages.SUCCESS, "Посты успешно отображены")
-    context = {"title": "Блог", "posts": posts}
+    # Получаем параметры поиска
+    search_query = request.GET.get('search_query', '')
     
-    return render(request, "blog.html", context)
+    if search_query:
+        # Инициализируем пустой Q-объект
+        search_conditions = Q()
+        
+        # Собираем условия поиска на основе выбранных критериев
+        search_mapping = {
+            'search_content': Q(content__icontains=search_query),
+            'search_title': Q(title__icontains=search_query),
+            'search_tags': Q(tags__name__icontains=search_query),
+            'search_category': Q(category__name__icontains=search_query),
+            'search_slug': Q(slug__icontains=search_query),
+        }
+        
+        # Проверяем каждый критерий поиска и добавляем его в условия
+        for param, condition in search_mapping.items():
+            if request.GET.get(param) == '1':
+                search_conditions |= condition
+        
+        # Применяем фильтрацию если есть условия
+        if search_conditions:
+            posts = posts.filter(search_conditions).distinct()
+    
+    # Настройки сортировки
+    sort_mapping = {
+        'created_date': '-created_at',
+        'view_count': '-views',
+        'update_date': '-updated_at',
+    }
+    
+    # Получаем параметр сортировки или используем значение по умолчанию
+    sort_by = request.GET.get('sort_by', 'created_date')
+    sort_field = sort_mapping.get(sort_by, '-created_at')
+    
+    # Применяем сортировку
+    posts = posts.order_by(sort_field)
+    
+    # Добавляем информационное сообщение при поиске
+    if search_query:
+        search_criteria = []
+        criteria_mapping = {
+            'search_content': 'контенте',
+            'search_title': 'заголовках',
+            'search_tags': 'тегах',
+            'search_category': 'категориях',
+            'search_slug': 'slug',
+        }
+        
+        for param, description in criteria_mapping.items():
+            if request.GET.get(param) == '1':
+                search_criteria.append(description)
+        
+        if search_criteria:
+            criteria_str = ', '.join(search_criteria)
+            messages.info(
+                request, 
+                f'Результаты поиска "{search_query}" в {criteria_str}. '
+                f'Найдено постов: {posts.count()}'
+            )
+    
+    context = {
+        'title': 'Блог',
+        'posts': posts,
+    }
+    
+    return render(request, 'blog.html', context)
+
 
 
 def post_detail(request, post_slug):
     post = Post.objects.get(slug=post_slug)
     context = {"title": post.title, "post": post}
     return render(request, "post_detail.html", context)
-
 
 
 def catalog_categories(request):
@@ -74,23 +140,17 @@ def category_detail(request, category_slug):
         "category": category,
         "posts": posts,
         "title": f"Категория: {category.name}",
-        "active_menu": "categories"  # Добавляем флаг активного меню
+        "active_menu": "categories",  # Добавляем флаг активного меню
     }
     return render(request, "category_detail.html", context)
 
 
-
 def catalog_tags(request):
     # Получаем все теги и аннотируем их количеством постов
-    tags = Tag.objects.annotate(posts_count=Count('posts')).order_by('-posts_count')
-    
-    context = {
-        'tags': tags,
-        'title': 'Теги блога',
-        'active_menu': 'tags'
-    }
-    return render(request, 'catalog_tags.html', context)
+    tags = Tag.objects.annotate(posts_count=Count("posts")).order_by("-posts_count")
 
+    context = {"tags": tags, "title": "Теги блога", "active_menu": "tags"}
+    return render(request, "catalog_tags.html", context)
 
 
 def tag_detail(request, tag_slug):
@@ -104,6 +164,5 @@ def tag_detail(request, tag_slug):
         "title": f"Тег: {tag.name}",
         "active_menu": "tags",  # Добавляем флаг активного меню
     }
-
 
     return render(request, "tag_detail.html", context)

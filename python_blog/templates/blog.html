@@ -83,7 +83,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="search_content" 
                                                value="1" id="search_content" 
-                                               {% if request.GET.search_content == '1' %}checked{% endif %}>
+                                               {% if request.GET.search_content == '1' or request.GET.search_content is None %}checked{% endif %}>
                                         <label class="form-check-label" for="search_content">
                                             Искать в тексте
                                         </label>

@@ -129,7 +129,6 @@
         </form>
     </div>
 
-    {% cache 300 post_list %}
     <div class="row">
         <div class="col-12">
             {% for post in posts %}
@@ -141,6 +140,5 @@
             {% endfor %}
         </div>
     </div>
-    {% endcache %}
 </div>
 {% endblock %}

@@ -8,7 +8,6 @@ from django.db.models import Count, Q
 from django.contrib.messages import constants as messages
 from django.contrib import messages
 
-
 CATEGORIES = [
     {"slug": "python", "name": "Python"},
     {"slug": "django", "name": "Django"},
@@ -50,67 +49,42 @@ def catalog_posts(request):
     # Базовый QuerySet с оптимизацией запросов
     posts = Post.objects.select_related('category', 'author').prefetch_related('tags').all()
     
-    # Получаем параметры поиска
+    # Получаем строку поиска
     search_query = request.GET.get('search_query', '')
     
     if search_query:
-        # Инициализируем пустой Q-объект
-        search_conditions = Q()
+        # Создаем пустой Q объект
+        q_object = Q()
         
-        # Собираем условия поиска на основе выбранных критериев
-        search_mapping = {
-            'search_content': Q(content__icontains=search_query),
-            'search_title': Q(title__icontains=search_query),
-            'search_tags': Q(tags__name__icontains=search_query),
-            'search_category': Q(category__name__icontains=search_query),
-            'search_slug': Q(slug__icontains=search_query),
-        }
+        # Добавляем условия поиска если включены соответствующие чекбоксы
+        if request.GET.get('search_content') == '1':
+            q_object |= Q(content__icontains=search_query)
+            
+        if request.GET.get('search_title') == '1':
+            q_object |= Q(title__icontains=search_query)
+            
+        if request.GET.get('search_tags') == '1':
+            q_object |= Q(tags__name__icontains=search_query)
+            
+        if request.GET.get('search_category') == '1':
+            q_object |= Q(category__name__icontains=search_query)
+            
+        if request.GET.get('search_slug') == '1':
+            q_object |= Q(slug__icontains=search_query)
         
-        # Проверяем каждый критерий поиска и добавляем его в условия
-        for param, condition in search_mapping.items():
-            if request.GET.get(param) == '1':
-                search_conditions |= condition
-        
-        # Применяем фильтрацию если есть условия
-        if search_conditions:
-            posts = posts.filter(search_conditions).distinct()
+        # Применяем фильтрацию если есть хотя бы одно условие
+        if q_object:
+            posts = posts.filter(q_object).distinct()
     
-    # Настройки сортировки
-    sort_mapping = {
-        'created_date': '-created_at',
-        'view_count': '-views',
-        'update_date': '-updated_at',
-    }
-    
-    # Получаем параметр сортировки или используем значение по умолчанию
+    # Сортировка результатов
     sort_by = request.GET.get('sort_by', 'created_date')
-    sort_field = sort_mapping.get(sort_by, '-created_at')
     
-    # Применяем сортировку
-    posts = posts.order_by(sort_field)
-    
-    # Добавляем информационное сообщение при поиске
-    if search_query:
-        search_criteria = []
-        criteria_mapping = {
-            'search_content': 'контенте',
-            'search_title': 'заголовках',
-            'search_tags': 'тегах',
-            'search_category': 'категориях',
-            'search_slug': 'slug',
-        }
-        
-        for param, description in criteria_mapping.items():
-            if request.GET.get(param) == '1':
-                search_criteria.append(description)
-        
-        if search_criteria:
-            criteria_str = ', '.join(search_criteria)
-            messages.info(
-                request, 
-                f'Результаты поиска "{search_query}" в {criteria_str}. '
-                f'Найдено постов: {posts.count()}'
-            )
+    if sort_by == 'view_count':
+        posts = posts.order_by('-views')
+    elif sort_by == 'update_date':
+        posts = posts.order_by('-updated_at')
+    else:
+        posts = posts.order_by('-created_at')
     
     context = {
         'title': 'Блог',
@@ -118,6 +92,7 @@ def catalog_posts(request):
     }
     
     return render(request, 'blog.html', context)
+
 
 
 

@@ -155,3 +155,26 @@ body {
 .accordion-button:not(.collapsed)::after {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
 }
+
+/* Стили для пагинатора */
+.pagination .page-link {
+    color: #6c757d;  /* Серый цвет для неактивных кнопок */
+    border-color: #6c757d;
+    background-color: transparent;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #212529;  /* Черный цвет для активной кнопки */
+    border-color: #212529;
+    color: #fff;
+}
+
+.pagination .page-link:hover {
+    background-color: #ffc107;  /* Желтый при наведении */
+    border-color: #212529;
+    color: #212529;
+}
+
+.pagination .page-link:focus {
+    box-shadow: 0 0 0 0.25rem rgba(33, 37, 41, 0.25);  /* Тень при фокусе */
+}

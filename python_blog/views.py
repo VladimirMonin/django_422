@@ -4,7 +4,7 @@ from django.urls import reverse
 from .models import Post, Category, Tag
 
 # Импортируем Count
-from django.db.models import Count, Q
+from django.db.models import Count, Q, F
 from django.contrib.messages import constants as messages
 from django.contrib import messages
 
@@ -94,10 +94,17 @@ def catalog_posts(request):
     return render(request, 'blog.html', context)
 
 
-
-
 def post_detail(request, post_slug):
+    """
+    Вью детального отображения поста. 
+    Увеличивает количество просмотров поста через F-объект.
+    """
     post = Post.objects.get(slug=post_slug)
+    post.views = F("views") + 1
+    post.save()
+    # Перезагружаем объект из базы данных
+    post.refresh_from_db()
+    
     context = {"title": post.title, "post": post}
     return render(request, "post_detail.html", context)
 

@@ -99,8 +99,25 @@ def post_detail(request, post_slug):
     Вью детального отображения поста. 
     Увеличивает количество просмотров поста через F-объект.
     """
-    post = Post.objects.filter(slug=post_slug).update(views=F("views") + 1)
+
+    # Получаем пост
+    
     post = Post.objects.select_related("category", "author").prefetch_related("tags").get(slug=post_slug)
+    
+    # Добываем сессию
+    session = request.session
+
+    # Формируем ключ для сессии
+    key = f"viewed_posts_{post.id}"
+
+    # Если пост не был просмотрен
+    if key not in session:
+        # Увеличиваем количество просмотров
+        Post.objects.filter(id=post.id).update(views=F("views") + 1)
+        # Записываем в сессию, что пост был просмотрен
+        session[key] = True
+        post.refresh_from_db()    # Обновляем объект
+    
     
     context = {"title": post.title, "post": post}
     return render(request, "post_detail.html", context)

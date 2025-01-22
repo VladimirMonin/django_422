@@ -1,5 +1,5 @@
 {% load cache %}
-{% cache 300 post_preview post.id %}
+{% cache 3 post_preview post.id %}
 <div class="card mb-4 border-dark">
     <div class="card-body">
         <h2 class="card-title text-dark">{{ post.title }}</h2>

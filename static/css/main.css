@@ -178,3 +178,18 @@ body {
 .pagination .page-link:focus {
     box-shadow: 0 0 0 0.25rem rgba(33, 37, 41, 0.25);  /* Тень при фокусе */
 }
+
+.page-goto input[type="number"] {
+    border-color: #212529;
+}
+
+.page-goto input[type="number"]:focus {
+    border-color: #212529;
+    box-shadow: 0 0 0 0.25rem rgba(33, 37, 41, 0.25);
+}
+
+.page-goto .btn:hover {
+    background-color: #ffc107;
+    border-color: #212529;
+    color: #212529;
+}

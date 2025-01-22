@@ -99,11 +99,8 @@ def post_detail(request, post_slug):
     Вью детального отображения поста. 
     Увеличивает количество просмотров поста через F-объект.
     """
-    post = Post.objects.get(slug=post_slug)
-    post.views = F("views") + 1
-    post.save()
-    # Перезагружаем объект из базы данных
-    post.refresh_from_db()
+    post = Post.objects.filter(slug=post_slug).update(views=F("views") + 1)
+    post = Post.objects.select_related("category", "author").prefetch_related("tags").get(slug=post_slug)
     
     context = {"title": post.title, "post": post}
     return render(request, "post_detail.html", context)

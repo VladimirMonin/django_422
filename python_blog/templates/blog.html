@@ -144,7 +144,7 @@
                 <ul class="pagination justify-content-center">
                     {% if page_obj.has_previous %}
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}&search_query={{ request.GET.search_query }}&sort_by={{ request.GET.sort_by }}&search_content={{ request.GET.search_content }}&search_title={{ request.GET.search_title }}&search_tags={{ request.GET.search_tags }}&search_category={{ request.GET.search_category }}&search_slug={{ request.GET.search_slug }}" aria-label="Previous">
+                            <a class="page-link" href="?{% for key,value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
@@ -152,13 +152,13 @@
 
                     {% for p in page_obj.paginator.page_range %}
                         <li class="page-item {% if page_obj.number == p %}active{% endif %}">
-                            <a class="page-link" href="?page={{ p }}&search_query={{ request.GET.search_query }}&sort_by={{ request.GET.sort_by }}&search_content={{ request.GET.search_content }}&search_title={{ request.GET.search_title }}&search_tags={{ request.GET.search_tags }}&search_category={{ request.GET.search_category }}&search_slug={{ request.GET.search_slug }}">{{ p }}</a>
+                            <a class="page-link" href="?{% for key,value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ p }}">{{ p }}</a>
                         </li>
                     {% endfor %}
 
                     {% if page_obj.has_next %}
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.next_page_number }}&search_query={{ request.GET.search_query }}&sort_by={{ request.GET.sort_by }}&search_content={{ request.GET.search_content }}&search_title={{ request.GET.search_title }}&search_tags={{ request.GET.search_tags }}&search_category={{ request.GET.search_category }}&search_slug={{ request.GET.search_slug }}" aria-label="Next">
+                            <a class="page-link" href="?{% for key,value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>
@@ -170,3 +170,4 @@
     </div>
 </div>
 {% endblock %}
+

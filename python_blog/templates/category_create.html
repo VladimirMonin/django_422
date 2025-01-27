@@ -3,14 +3,21 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<form method="POST" action="{{ action_url }}">
-    {% csrf_token %}
-    <label for="name">Название категории:</label>
-    <input type="text" id="name" name="name" required value="{{ category.name|default:'' }}">
-    
-    <label for="description">Описание:</label>
-    <textarea id="description" name="description">{{ category.description|default:'' }}</textarea>
-    
-    <button type="submit">{{ button_text }}</button>
-</form>
+<div class="form-container">
+    <h2>{{ title }}</h2>
+    <form method="POST" action="{{ action_url }}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="name">Название категории:</label>
+            <input type="text" id="name" name="name" required value="{{ category.name|default:'' }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="description">Описание:</label>
+            <textarea id="description" name="description">{{ category.description|default:'' }}</textarea>
+        </div>
+        
+        <button type="submit" class="form-submit">{{ button_text }}</button>
+    </form>
+</div>
 {% endblock %}

@@ -7,7 +7,6 @@ from django.contrib.messages import constants as messages
 from django.contrib import messages
 
 
-
 CATEGORIES = [
     {"slug": "python", "name": "Python"},
     {"slug": "django", "name": "Django"},
@@ -156,7 +155,46 @@ def category_create(request):
             messages.success(request, f'Категория "{category.name}" успешно создана!')
             return redirect("blog:categories")
 
-    return render(request, "category_create.html", {"title": "Создание категории"})
+    context = {
+        "title": "Создание категории",
+        "button_text": "Создать категорию",
+        "action_url": reverse("blog:category_create"),
+    }
+    return render(request, "category_create.html", context)
+
+
+def category_update(request, category_slug):
+    # Получаем объект категории по slug
+    category = Category.objects.get(slug=category_slug)
+
+    if request.method == "POST":
+        # Получаем данные из формы
+        name = request.POST.get("name")
+        description = request.POST.get("description")
+
+        if name:
+            # Обновляем поля категории
+            category.name = name
+            category.description = description or "Без описания"
+            # Сохраняем изменения
+            category.save()
+            # Добавляем сообщение об успешном обновлении
+            messages.success(request, f'Категория "{category.name}" успешно обновлена!')
+            # Перенаправляем на список категорий
+            return redirect("blog:categories")
+
+    # Контекст для GET запроса
+    context = {
+        "title": "Обновление категории",
+        "button_text": "Обновить категорию",
+        "action_url": reverse(
+            "blog:category_update", kwargs={"category_slug": category_slug}
+        ),
+        "category": category,
+    }
+
+    # Используем тот же шаблон что и для создания
+    return render(request, "category_create.html", context)
 
 
 def category_detail(request, category_slug):

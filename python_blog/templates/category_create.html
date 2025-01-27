@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 
-{% block title %}Создание категории{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<form method="POST" action="{% url 'blog:category_create' %}">
+<form method="POST" action="{{ action_url }}">
     {% csrf_token %}
     <label for="name">Название категории:</label>
-    <input type="text" id="name" name="name" required>
+    <input type="text" id="name" name="name" required value="{{ category.name|default:'' }}">
     
     <label for="description">Описание:</label>
-    <textarea id="description" name="description"></textarea>
+    <textarea id="description" name="description">{{ category.description|default:'' }}</textarea>
     
-    <button type="submit">Создать категорию</button>
+    <button type="submit">{{ button_text }}</button>
 </form>
 {% endblock %}

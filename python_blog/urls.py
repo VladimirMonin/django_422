@@ -1,7 +1,7 @@
 # python_blog\urls.py Django APP python_blog
 from django.contrib import admin
 from django.urls import path
-from python_blog.views import catalog_posts, post_detail, catalog_categories, category_detail, catalog_tags, tag_detail
+from python_blog.views import catalog_posts, post_detail, catalog_categories, category_detail, catalog_tags, tag_detail, category_create
 
 app_name = 'blog'
 
@@ -15,7 +15,10 @@ urlpatterns = [
     # Категории posts/categories/
     # Категории posts/categories/python/
     path('categories/', catalog_categories, name='categories'),
+    path('categories/create/', category_create, name='category_create'),
     path('categories/<slug:category_slug>/', category_detail, name='category_detail'),
+    # path('categories/<slug:category_slug>/update/', category_detail, name='category_detail'),
+    # path('categories/<slug:category_slug>/delete/', category_detail, name='category_detail'),
     
     # Теги posts/tags/
     # Теги posts/tags/python/

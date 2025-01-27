@@ -5,7 +5,7 @@ from .models import Post, Category, Tag
 from django.db.models import Count, Q, F
 from django.contrib.messages import constants as messages
 from django.contrib import messages
-
+from .forms import TagForm
 
 CATEGORIES = [
     {"slug": "python", "name": "Python"},
@@ -230,3 +230,24 @@ def tag_detail(request, tag_slug):
     }
 
     return render(request, "tag_detail.html", context)
+
+
+
+def tag_create(request):
+    if request.method == 'POST':
+        form = TagForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            tag = Tag.objects.create(name=name)
+            messages.success(request, f'Тег "{tag.name}" успешно создан!')
+            return redirect('blog:tags')
+    else:
+        form = TagForm()
+    
+    context = {
+        'title': 'Создание тега',
+        'button_text': 'Создать тег',
+        'action_url': reverse('blog:tag_create'),
+        'form': form
+    }
+    return render(request, 'tag_form.html', context)

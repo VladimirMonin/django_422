@@ -7,14 +7,14 @@
 
 def menu_items(request):
     menu = [
-    {"title": "Главная", "url_name": "main"},
-    {"title": "О нас", "url_name": "about"},
-    {"title": "Все посты", "url_name": "blog:posts"},
-    {"title": "Категории", "url_name": "blog:categories"},
-    {"title": "Теги", "url_name": "blog:tags"},
-]
+        {"title": "Главная", "url_name": "main"},
+        {"title": "О нас", "url_name": "about"},
+        {"title": "Все посты", "url_name": "blog:posts"},
+        {"title": "Создать пост", "url_name": "blog:post_create"},
+        {"title": "Категории", "url_name": "blog:categories"},
+        {"title": "Теги", "url_name": "blog:tags"},
+    ]
     
-    # Определяем активный пункт меню
     current_url_name = request.resolver_match.view_name
     
     for item in menu:

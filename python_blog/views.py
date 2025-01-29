@@ -46,8 +46,15 @@ def about(request):
 
 def catalog_posts(request):
     # Базовый QuerySet с оптимизацией запросов
+    # Фильтрация по status=published
+    # posts = (
+    #     Post.objects.select_related("category", "author").prefetch_related("tags").all()
+    # )
+
     posts = (
-        Post.objects.select_related("category", "author").prefetch_related("tags").all()
+        Post.objects.select_related("category", "author")
+        .prefetch_related("tags")
+        .filter(status="published")
     )
 
     # Получаем строку поиска

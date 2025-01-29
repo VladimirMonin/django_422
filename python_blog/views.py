@@ -237,8 +237,7 @@ def tag_create(request):
     if request.method == 'POST':
         form = TagForm(request.POST)
         if form.is_valid():
-            name = form.cleaned_data['name']
-            tag = Tag.objects.create(name=name)
+            tag = form.save()  # Сохраняем тег через форму
             messages.success(request, f'Тег "{tag.name}" успешно создан!')
             return redirect('blog:tags')
     else:

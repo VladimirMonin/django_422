@@ -164,6 +164,25 @@ def post_create(request):
     }
     return render(request, 'tag_form.html', context)
 
+def post_update(request, post_slug):
+    post = Post.objects.get(slug=post_slug)
+    if request.method == 'POST':
+        form = PostForm(request.POST, instance=post)
+        if form.is_valid():
+            post = form.save()
+            messages.success(request, 'Пост успешно обновлен и отправлен на модерацию')
+            return redirect('blog:post_detail', post_slug=post.slug)
+    else:
+        form = PostForm(instance=post)
+    
+    context = {
+        'title': 'Редактирование поста',
+        'button_text': 'Обновить пост',
+        'action_url': reverse('blog:post_update', kwargs={'post_slug': post_slug}),
+        'form': form
+    }
+    return render(request, 'post_form.html', context)
+
 
 
 def catalog_categories(request):

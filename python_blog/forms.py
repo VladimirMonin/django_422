@@ -38,6 +38,16 @@ class TagForm(forms.ModelForm):
     
 
 class PostForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance')
+        super().__init__(*args, **kwargs)
+        if instance:
+            self.fields['tags_input'].initial = ', '.join(
+                tag.name for tag in instance.tags.all()
+            )
+
+    
     tags_input = forms.CharField(
         label='Теги',
         required=False,

@@ -12,6 +12,7 @@ from python_blog.views import (
     category_update,
     tag_create,
     post_create,
+    post_update
 )
 
 app_name = "blog"
@@ -41,4 +42,6 @@ urlpatterns = [
     # Посты posts/
     path("create/", post_create, name="post_create"),
     path("<slug:post_slug>/", post_detail, name="post_detail"),
+    path('<slug:post_slug>/update/', post_update, name='post_update'),
+
 ]

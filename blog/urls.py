@@ -26,6 +26,9 @@ urlpatterns = [
 
     # Подключаем python_blog.urls
     path('posts/', include('python_blog.urls')),
+
+    # Подключаем users_app
+    path('users/', include('users_app.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:

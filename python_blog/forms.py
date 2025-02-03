@@ -83,18 +83,27 @@ class PostForm(forms.ModelForm):
         return []
 
     def save(self, commit=True):
+        # Создаем экземпляр модели, но не сохраняем его пока в БД
         post = super().save(commit=False)
         post.status = 'review'
         
         if commit:
+            # Сохраняем пост один раз в БД
             post.save()
+            
             # Обработка тегов
-            tags = self.cleaned_data.get('tags_input', [])
-            for tag_name in tags:
+            tag_names = self.cleaned_data.get('tags_input', [])
+            tags_to_add = []
+            for tag_name in tag_names:
                 tag_slug = slugify(unidecode(tag_name))
                 tag, created = Tag.objects.get_or_create(
-                    slug=tag_slug, defaults={"name": tag_name}
+                    slug=tag_slug,
+                    defaults={"name": tag_name}
                 )
-                post.tags.add(tag)
-        
+                tags_to_add.append(tag)
+            if tags_to_add:
+                # Добавляем все теги за один вызов, чтобы минимизировать операции записи
+                post.tags.add(*tags_to_add)
+                
         return post
+

@@ -3,6 +3,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.contrib.auth.views import LogoutView
 
 
 from django.shortcuts import render, redirect
@@ -39,20 +40,10 @@ def login_user(request):
     return render(request, "login.html")
 
 
-def logout_user(request):
-    """View функция для выхода пользователя из системы"""
+class CustomLogoutView(LogoutView):
+    template_name = 'logout.html'
+    next_page = 'main'
 
-    # Если пользователь не авторизован - редиректим на главную
-    if not request.user.is_authenticated:
-        return redirect("main")
-
-    # Если POST запрос - выходим из системы
-    if request.method == "POST":
-        logout(request)
-        messages.success(request, "Вы успешно вышли из системы")
-        return redirect("main")
-
-    return render(request, "logout.html")
 
 
 def register_user(request):

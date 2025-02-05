@@ -12,46 +12,28 @@ from django.contrib import messages
 from django.urls import reverse
 from .forms import LoginForm
 
-def login_user(request):
-    """View функция для авторизации пользователя"""
-
-    # Если пользователь уже авторизован - редиректим на главную
-    if request.user.is_authenticated:
-        return redirect("main")
-
-    # Если POST запрос - обрабатываем форму
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-
-        # Пытаемся авторизовать пользователя
-        user = authenticate(request, username=username, password=password)
-
-        # Если пользователь найден
-        if user is not None:
-            # Авторизуем пользователя
-            login(request, user)
-            messages.success(request, f"Добро пожаловать, {user.username}!")
-            return redirect("main")
-        else:
-            # Если пользователь не найден - показываем ошибку
-            messages.error(request, "Неверное имя пользователя или пароль")
-
-    return render(request, "login.html")
-
 
 class CustomLoginView(LoginView):
     template_name = 'login.html'
     form_class = LoginForm
     next_page = 'main'
     
+    def form_valid(self, form):
+        messages.success(self.request, f'Добро пожаловать, {form.get_user().username}!')
+        return super().form_valid(form)
 
+    def form_invalid(self, form):
+        messages.error(self.request, 'Неверное имя пользователя или пароль')
+        return super().form_invalid(form)
 
 
 class CustomLogoutView(LogoutView):
     template_name = 'logout.html'
     next_page = 'main'
 
+    def dispatch(self, request, *args, **kwargs):
+        messages.success(request, 'Вы успешно вышли из системы')
+        return super().dispatch(request, *args, **kwargs)
 
 
 def register_user(request):

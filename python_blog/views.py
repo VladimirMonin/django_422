@@ -6,6 +6,7 @@ from django.db.models import Count, Q, F
 from django.contrib.messages import constants as messages
 from django.contrib import messages
 from .forms import TagForm, PostForm
+from django.contrib.auth.decorators import login_required
 
 CATEGORIES = [
     {"slug": "python", "name": "Python"},
@@ -143,6 +144,7 @@ def post_detail(request, post_slug):
     context = {"title": post.title, "post": post}
     return render(request, "post_detail.html", context)
 
+@login_required
 def post_create(request):
     if request.method == 'POST':
         form = PostForm(request.POST)
@@ -164,6 +166,7 @@ def post_create(request):
     }
     return render(request, 'tag_form.html', context)
 
+@login_required
 def post_update(request, post_slug):
     post = Post.objects.get(slug=post_slug)
     if request.method == 'POST':
@@ -190,7 +193,7 @@ def catalog_categories(request):
     context = {"categories": categories, "title": "Категории блога"}
     return render(request, "catalog_categories.html", context)
 
-
+@login_required
 def category_create(request):
     if request.method == "POST":
         name = request.POST.get("name")
@@ -210,7 +213,7 @@ def category_create(request):
     }
     return render(request, "category_create.html", context)
 
-
+@login_required
 def category_update(request, category_slug):
     # Получаем объект категории по slug
     category = Category.objects.get(slug=category_slug)
@@ -280,7 +283,7 @@ def tag_detail(request, tag_slug):
     return render(request, "tag_detail.html", context)
 
 
-
+@login_required
 def tag_create(request):
     if request.method == 'POST':
         form = TagForm(request.POST)

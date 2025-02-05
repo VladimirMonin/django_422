@@ -5,12 +5,15 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LogoutView, LoginView
 
+from django.views.generic.edit import CreateView
+from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse_lazy
 
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.urls import reverse
-from .forms import LoginForm
+from .forms import LoginForm, RegisterForm
 
 
 class CustomLoginView(LoginView):
@@ -34,6 +37,12 @@ class CustomLogoutView(LogoutView):
     def post(self, request, *args, **kwargs):
         messages.success(request, 'Вы успешно вышли из системы')
         return super().post(request, *args, **kwargs)
+
+
+class RegisterView(CreateView):
+    form_class = RegisterForm
+    template_name = 'register.html'
+    success_url = reverse_lazy('main')
 
 
 def register_user(request):

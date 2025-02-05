@@ -31,9 +31,9 @@ class CustomLogoutView(LogoutView):
     template_name = 'logout.html'
     next_page = 'main'
 
-    def dispatch(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         messages.success(request, 'Вы успешно вышли из системы')
-        return super().dispatch(request, *args, **kwargs)
+        return super().post(request, *args, **kwargs)
 
 
 def register_user(request):

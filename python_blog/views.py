@@ -6,7 +6,7 @@ from django.db.models import Count, Q, F
 from django.contrib.messages import constants as messages
 from django.contrib import messages
 from .forms import TagForm, PostForm
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 
 CATEGORIES = [
     {"slug": "python", "name": "Python"},
@@ -144,7 +144,7 @@ def post_detail(request, post_slug):
     context = {"title": post.title, "post": post}
     return render(request, "post_detail.html", context)
 
-@login_required
+@permission_required('python_blog.add_post', raise_exception=True)
 def post_create(request):
     if request.method == 'POST':
         form = PostForm(request.POST)

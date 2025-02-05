@@ -10,7 +10,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.urls import reverse
-from django.contrib.auth.forms import AuthenticationForm
+from .forms import LoginForm
 
 def login_user(request):
     """View функция для авторизации пользователя"""
@@ -42,14 +42,10 @@ def login_user(request):
 
 class CustomLoginView(LoginView):
     template_name = 'login.html'
-    form_class = AuthenticationForm
+    form_class = LoginForm
     next_page = 'main'
+    
 
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        for field in form.fields.values():
-            field.widget.attrs['class'] = 'form-control'
-        return form
 
 
 class CustomLogoutView(LogoutView):

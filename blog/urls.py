@@ -6,6 +6,7 @@ from django.urls import include
 
 from django.conf import settings
 from django.conf.urls.static import static
+
 """
 Конверторы путей Django:
 str - строки, любые символы кроме слэша '/' (по умолчанию)
@@ -19,19 +20,21 @@ path('articles/<int:year>/', views.year_archive)
 path('blog/<slug:post_slug>/', views.post_detail)
 
 """
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('about/', about, name="about"),
-    path("", main, name="main"),
-
-    # Подключаем python_blog.urls
-    path('posts/', include('python_blog.urls')),
-
-    # Подключаем users_app
-    path('users/', include('users_app.urls')),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns = (
+    [
+        path("admin/", admin.site.urls),
+        path("about/", about, name="about"),
+        path("", main, name="main"),
+        # Подключаем python_blog.urls
+        path("posts/", include("python_blog.urls")),
+        # Подключаем users_app
+        path("users/", include("users_app.urls")),
+    ]
+    + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+)
 
 if settings.DEBUG:
     urlpatterns += [
-        path('__debug__/', include('debug_toolbar.urls')),
+        path("__debug__/", include("debug_toolbar.urls")),
     ]

@@ -2,3 +2,4 @@ django
 unidecode
 django-extensions
 django-debug-toolbar
+pillow

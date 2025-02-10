@@ -156,3 +156,8 @@ LOGGING = {
 }
 
 LOGIN_URL = 'users:login'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+AUTH_USER_MODEL = 'users_app.CustomUser'

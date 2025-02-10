@@ -20,6 +20,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import DetailView
 from django.contrib.auth import get_user_model
 
+class OwnerPermissionMixin:
+    """
+    Миксин для проверки прав доступа к профилю
+    """
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_owner'] = self.request.user == self.get_object()
+        return context
 
 class CustomLoginView(LoginView):
     template_name = "login.html"
@@ -50,7 +58,7 @@ class RegisterView(CreateView):
     success_url = reverse_lazy("main")
 
 
-class ProfileDetailView(LoginRequiredMixin, DetailView):
+class ProfileDetailView(LoginRequiredMixin, OwnerPermissionMixin, DetailView):
     model = get_user_model()
     template_name = "profile_detail.html"
     context_object_name = "profile_user"

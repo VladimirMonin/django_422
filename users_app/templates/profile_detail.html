@@ -47,17 +47,19 @@
             </div>
             <div class="card-body">
                 <ul class="list-group list-group-flush">
+                    {% if is_owner %}
                     <li class="list-group-item d-flex justify-content-between">
                         <span class="text-muted">Email:</span>
                         <span>{{ profile_user.email|default:"Не указан" }}</span>
                     </li>
+                    {% endif %}
                     {% if profile_user.github_id %}
                     <li class="list-group-item d-flex justify-content-between">
                         <span class="text-muted">GitHub:</span>
                         <span>{{ profile_user.github_id }}</span>
                     </li>
                     {% endif %}
-                    {% if profile_user.telegram_id %}
+                    {% if is_owner and profile_user.telegram_id %}
                     <li class="list-group-item d-flex justify-content-between">
                         <span class="text-muted">Telegram:</span>
                         <span>{{ profile_user.telegram_id }}</span>

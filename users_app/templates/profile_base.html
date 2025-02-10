@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if user == profile_user %}
+        Мой профиль
+    {% else %}
+        Профиль {{ profile_user.username }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <!-- Левая колонка с аватаром и меню -->
+        <div class="col-md-3">
+            <div class="card border-dark mb-4">
+                <div class="card-body text-center">
+                    <div class="avatar-container mb-3">
+                        {% if profile_user.avatar %}
+                            <img src="{{ profile_user.avatar.url }}" 
+                                 class="rounded-circle img-fluid border border-3 border-warning" 
+                                 alt="Аватар пользователя"
+                                 style="width: 150px; height: 150px; object-fit: cover;">
+                        {% else %}
+                            <div class="rounded-circle bg-dark d-flex align-items-center justify-content-center mx-auto"
+                                 style="width: 150px; height: 150px;">
+                                <i class="bi bi-person-fill text-warning" style="font-size: 4rem;"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <h5 class="card-title mb-0">{{ profile_user.username }}</h5>
+                    {% if profile_user.is_staff %}
+                        <span class="badge bg-warning text-dark mt-2">
+                            <i class="bi bi-star-fill"></i> Администратор
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Меню профиля -->
+            <div class="card border-dark">
+                <div class="card-header bg-dark text-white">
+                    <i class="bi bi-list"></i> Навигация
+                </div>
+                <div class="card-body p-0">
+                    {% include 'profile_menu.html' %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Правая колонка с контентом -->
+        <div class="col-md-9">
+            <div class="card border-dark">
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{% block profile_title %}{% endblock %}</h5>
+                    {% block header_actions %}{% endblock %}
+                </div>
+                <div class="card-body">
+                    {% block profile_content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    {% block profile_scripts %}{% endblock %}
+{% endblock %}

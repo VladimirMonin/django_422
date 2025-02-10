@@ -1,0 +1,8 @@
+<div class="list-group list-group-flush">
+    {% for item in profile_menu_items %}
+        <a href="{% url item.url_name pk=profile_user.pk %}" 
+           class="list-group-item list-group-item-action {% if item.is_active %}active bg-dark text-white{% endif %}">
+            <i class="bi {{ item.icon }}"></i> {{ item.title }}
+        </a>
+    {% endfor %}
+</div>

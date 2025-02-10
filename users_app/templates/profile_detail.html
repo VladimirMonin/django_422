@@ -1,0 +1,91 @@
+{% extends 'profile_base.html' %}
+
+{% block profile_title %}
+    Информация о пользователе
+{% endblock %}
+
+{% block profile_content %}
+<div class="row g-4">
+    <!-- Основная информация -->
+    <div class="col-md-6">
+        <div class="card h-100 border-dark">
+            <div class="card-header bg-dark text-white">
+                <i class="bi bi-person-vcard"></i> Основная информация
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted">Имя пользователя:</span>
+                        <span class="fw-bold">{{ profile_user.username }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted">Дата регистрации:</span>
+                        <span>{{ profile_user.date_joined|date:"d.m.Y" }}</span>
+                    </li>
+                    {% if profile_user.first_name or profile_user.last_name %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted">Полное имя:</span>
+                        <span>{{ profile_user.get_full_name }}</span>
+                    </li>
+                    {% endif %}
+                    {% if profile_user.birth_date %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted">Дата рождения:</span>
+                        <span>{{ profile_user.birth_date|date:"d.m.Y" }}</span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Контакты -->
+    <div class="col-md-6">
+        <div class="card h-100 border-dark">
+            <div class="card-header bg-dark text-white">
+                <i class="bi bi-envelope"></i> Контактная информация
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted">Email:</span>
+                        <span>{{ profile_user.email|default:"Не указан" }}</span>
+                    </li>
+                    {% if profile_user.github_id %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted">GitHub:</span>
+                        <span>{{ profile_user.github_id }}</span>
+                    </li>
+                    {% endif %}
+                    {% if profile_user.telegram_id %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted">Telegram:</span>
+                        <span>{{ profile_user.telegram_id }}</span>
+                    </li>
+                    {% endif %}
+                    {% if profile_user.vk_id %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted">VK:</span>
+                        <span>{{ profile_user.vk_id }}</span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- О себе -->
+    {% if profile_user.bio %}
+    <div class="col-12">
+        <div class="card border-dark">
+            <div class="card-header bg-dark text-white">
+                <i class="bi bi-file-text"></i> О себе
+            </div>
+            <div class="card-body">
+                <p class="card-text">{{ profile_user.bio|linebreaks }}</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -14,27 +14,36 @@
                     </li>
                 {% endfor %}
                 
-                {% if user.is_authenticated %}
-                    <li class="nav-item ms-md-auto">
-                        <form action="{% url 'users:logout' %}" method="POST" class="d-inline">
-                            {% csrf_token %}
-                            <button type="submit" class="btn nav-link">
-                                Выйти ({{ user.username }})
-                            </button>
-                        </form>
-                    </li>
-                {% else %}
-                    <li class="nav-item ms-md-auto">
-                        <a class="nav-link" href="{% url 'users:login' %}">
-                            Войти
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'users:register' %}">
-                            Регистрация
-                        </a>
-                    </li>
-                {% endif %}
+                <li class="nav-item ms-md-auto">
+                    {% if user.is_authenticated %}
+                        <div class="d-flex align-items-center">
+                            <a href="{% url 'users:profile_detail' pk=user.pk %}" class="nav-link d-flex align-items-center me-3">
+                                {% if user.avatar %}
+                                    <img src="{{ user.avatar.url }}" 
+                                         class="rounded-circle me-2" 
+                                         alt="Аватар"
+                                         style="width: 30px; height: 30px; object-fit: cover;">
+                                {% else %}
+                                    <div class="rounded-circle bg-dark d-flex align-items-center justify-content-center me-2"
+                                         style="width: 30px; height: 30px;">
+                                        <i class="bi bi-person-fill text-warning" style="font-size: 1.2rem;"></i>
+                                    </div>
+                                {% endif %}
+                                {{user.username}}
+                            </a>
+                            <form action="{% url 'users:logout' %}" method="POST" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn nav-link">Выйти</button>
+                            </form>
+                        </div>
+                    {% else %}
+                        <div class="d-flex">
+                            <a href="{% url 'users:register' %}" class="nav-link me-3">Регистрация</a>
+                            <span class="nav-link me-3">|</span>
+                            <a href="{% url 'users:login' %}" class="nav-link">Вход</a>
+                        </div>
+                    {% endif %}
+                </li>
             </ul>
         </div>
     </div>

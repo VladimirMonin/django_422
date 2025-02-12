@@ -1,5 +1,6 @@
 <div class="list-group list-group-flush">
     {% for item in profile_menu_items %}
+    {% comment %} Плохо то, что придется добавлять условие или что то менять, если будут кнопки которые так же должны всегда рендерится {% endcomment %}
         {% if user.pk == profile_user.pk or item.url_name == 'users:profile_detail' %}
             <a href="{% url item.url_name pk=profile_user.pk %}" 
                class="list-group-item list-group-item-action {% if item.is_active %}active bg-dark text-white{% endif %}">

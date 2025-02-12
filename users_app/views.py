@@ -9,25 +9,28 @@ TemplateView - базовый класс для шаблонов
 """
 
 from django.contrib import messages
-from django.contrib.auth.views import LogoutView, LoginView
+from django.contrib.auth.views import LogoutView, LoginView, PasswordChangeView
 from django.views.generic.edit import CreateView
 from django.views.generic import TemplateView
 from django.urls import reverse_lazy
 from django.contrib import messages
 
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm, CustomPasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import DetailView
 from django.contrib.auth import get_user_model
+
 
 class OwnerPermissionMixin:
     """
     Миксин для проверки прав доступа к профилю
     """
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['is_owner'] = self.request.user == self.get_object()
+        context["is_owner"] = self.request.user == self.get_object()
         return context
+
 
 class CustomLoginView(LoginView):
     template_name = "login.html"
@@ -63,11 +66,24 @@ class ProfileDetailView(LoginRequiredMixin, OwnerPermissionMixin, DetailView):
     template_name = "profile_detail.html"
     context_object_name = "profile_user"
 
+
 # Классы заглушки ProfileEditView, ProfilePasswordView
+
 
 class ProfileEditView(LoginRequiredMixin, TemplateView):
     template_name = "profile_base.html"
 
 
-class ProfilePasswordView(LoginRequiredMixin, TemplateView):
-    template_name = "profile_base.html"
+class ProfilePasswordView(LoginRequiredMixin, PasswordChangeView):
+    template_name = "profile_password.html"
+    form_class = CustomPasswordChangeForm
+    # Реверс с аргументом pk
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["profile_user"] = self.request.user
+        return context
+    
+    def get_success_url(self):
+        return reverse_lazy("users:profile_detail", kwargs={"pk": self.request.user.pk})

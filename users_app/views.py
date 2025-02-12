@@ -10,12 +10,12 @@ TemplateView - базовый класс для шаблонов
 
 from django.contrib import messages
 from django.contrib.auth.views import LogoutView, LoginView, PasswordChangeView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import TemplateView
 from django.urls import reverse_lazy
 from django.contrib import messages
 
-from .forms import LoginForm, RegisterForm, CustomPasswordChangeForm
+from .forms import LoginForm, RegisterForm, CustomPasswordChangeForm, ProfileEditForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import DetailView
 from django.contrib.auth import get_user_model
@@ -67,23 +67,36 @@ class ProfileDetailView(LoginRequiredMixin, OwnerPermissionMixin, DetailView):
     context_object_name = "profile_user"
 
 
-# Классы заглушки ProfileEditView, ProfilePasswordView
-
-
-class ProfileEditView(LoginRequiredMixin, TemplateView):
-    template_name = "profile_base.html"
-
 
 class ProfilePasswordView(LoginRequiredMixin, PasswordChangeView):
     template_name = "profile_password.html"
     form_class = CustomPasswordChangeForm
     # Реверс с аргументом pk
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["profile_user"] = self.request.user
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy("users:profile_detail", kwargs={"pk": self.request.user.pk})
+
+
+class ProfileEditView(LoginRequiredMixin, UpdateView):
+    form_class = ProfileEditForm
+    template_name = "profile_edit.html"
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def get_success_url(self):
+        return reverse_lazy("users:profile_detail", kwargs={"pk": self.request.user.pk})
+
+    def form_valid(self, form):
+        messages.success(self.request, "Профиль успешно обновлен")
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["profile_user"] = self.request.user
         return context
-    
-    def get_success_url(self):
-        return reverse_lazy("users:profile_detail", kwargs={"pk": self.request.user.pk})

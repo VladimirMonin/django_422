@@ -58,3 +58,28 @@ class CustomPasswordChangeForm(PasswordChangeForm):
             field.widget.attrs.update({"class": "form-control"})
             # Удаляем подсказки поля из формы
             field.help_text = ""
+
+
+class ProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = get_user_model()
+        fields = ["first_name", "last_name", "avatar", "birth_date", "bio"]
+        widgets = {
+            "first_name": forms.TextInput(
+                attrs={"class": "form-control", "placeholder": "Введите имя"}
+            ),
+            "last_name": forms.TextInput(
+                attrs={"class": "form-control", "placeholder": "Введите фамилию"}
+            ),
+            "avatar": forms.FileInput(attrs={"class": "form-control"}),
+            "birth_date": forms.DateInput(
+                attrs={"class": "form-control", "type": "date", "format": "%Y-%m-%d"}, format="%Y-%m-%d"
+            ),
+            "bio": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Расскажите о себе",
+                    "rows": 5,
+                }
+            ),
+        }
